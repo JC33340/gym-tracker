@@ -5,11 +5,18 @@ type ButtonPropType = {
     text?: string;
     children?: React.ReactNode;
     handleClick?: () => void;
+    backgroundColor?: string;
 };
 
-const Button = ({ text, handleClick, children }: ButtonPropType) => {
+const Button = ({ text, handleClick, children, backgroundColor }: ButtonPropType) => {
     return (
-        <TouchableOpacity style={styles.container} onPress={handleClick}>
+        <TouchableOpacity
+            style={{
+                ...styles.container,
+                backgroundColor: backgroundColor ?? styles.container.backgroundColor,
+            }}
+            onPress={handleClick}
+        >
             {children}
             {text && <Text style={styles.text}>{text}</Text>}
         </TouchableOpacity>
@@ -21,7 +28,6 @@ const styles = StyleSheet.create({
         borderColor: Colors.light.main,
         backgroundColor: Colors.light.main,
         borderRadius: 5,
-        borderWidth: 2,
         width: '100%',
         paddingHorizontal: 10,
         paddingVertical: 10,

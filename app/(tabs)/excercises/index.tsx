@@ -10,6 +10,7 @@ import ExerciseDisplay from '@/components/exerciseComponents/ExerciseDisplay';
 type exerciseCategories = 'any' | 'arms' | 'chest' | 'back' | 'legs' | 'core' | 'shoulders';
 
 type exerciseType = {
+    id: string;
     name: string;
     category: exerciseCategories;
     history: { sets: []; date: string }[];

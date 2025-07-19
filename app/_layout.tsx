@@ -4,10 +4,13 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import type { exerciseType } from './(tabs)/excercises';
 import checkName from '@/utils/exercise/checkName';
 import { Alert } from 'react-native';
+import { stripBaseUrl } from 'expo-router/build/fork/getStateFromPath-forks';
 
 type appContextType = {
     exercises: exerciseType[];
     addExercise: (exercise: exerciseType) => Promise<boolean>;
+    editExercise: (exercise: exerciseType) => Promise<boolean>;
+    deleteExercise: (exercise: exerciseType) => Promise<boolean>;
 };
 
 const appContext = createContext<appContextType | null>(null);
@@ -15,14 +18,15 @@ const appContext = createContext<appContextType | null>(null);
 export default function RootLayout() {
     const [exercises, setExercises] = useState<exerciseType[]>([]);
 
-    const addExercise = async (exercise: exerciseType):Promise<boolean> => {
+    //function for adding an exercise
+    const addExercise = async (exercise: exerciseType): Promise<boolean> => {
         const exercises = await AsyncStorage.getItem('exercises');
         const exercisesParsed: exerciseType[] = exercises ? JSON.parse(exercises) : [];
         //checking if name exists
         const isNameExist = checkName(exercise.name, exercisesParsed);
         if (isNameExist) {
-            Alert.alert('Name already in use')
-            return false
+            Alert.alert('Name already in use');
+            return false;
         }
 
         await AsyncStorage.setItem('exercises', JSON.stringify([...exercisesParsed, exercise]));
@@ -34,7 +38,39 @@ export default function RootLayout() {
                 return [exercise];
             }
         });
-        return true
+        return true;
+    };
+
+    //function for editing an exercise
+    const editExercise = async (exercise: exerciseType): Promise<boolean> => {
+        try {
+            const storedData = await AsyncStorage.getItem('exercises');
+            const storedDataP: exerciseType[] = storedData ? JSON.parse(storedData) : [];
+            const index = storedDataP.findIndex((item) => item.id === exercise.id);
+            storedDataP[index] = exercise;
+            await AsyncStorage.setItem('exercises', JSON.stringify(storedDataP));
+            setExercises(storedDataP);
+            return true;
+        } catch (e) {
+            console.log(e);
+            return false;
+        }
+    };
+
+    //function for deleting an Exercise
+    const deleteExercise = async (exercise: exerciseType): Promise<boolean> => {
+        try {
+            const storedData = await AsyncStorage.getItem('exercises');
+            const storedDataP: exerciseType[] = storedData ? JSON.parse(storedData) : [];
+            const index = storedDataP.findIndex((item) => item.id === exercise.id);
+            storedDataP.splice(index, 1);
+            await AsyncStorage.setItem('exercises', JSON.stringify(storedDataP));
+            setExercises(storedDataP);
+            return true;
+        } catch (e) {
+            console.log(e);
+            return false;
+        }
     };
 
     useEffect(() => {
@@ -48,7 +84,7 @@ export default function RootLayout() {
     }, []);
 
     return (
-        <appContext.Provider value={{ exercises: exercises, addExercise: addExercise }}>
+        <appContext.Provider value={{ exercises, addExercise, editExercise, deleteExercise }}>
             <Stack screenOptions={{ headerShown: false }}>
                 <Stack.Screen name="(tabs)" />
             </Stack>
