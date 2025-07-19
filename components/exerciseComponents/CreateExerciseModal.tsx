@@ -6,12 +6,10 @@ import { useState, useContext } from 'react';
 import { Colors } from '@/constants/Colors';
 import Input from '../general/Input';
 import type { exerciseType, exerciseCategories } from '@/app/(tabs)/excercises';
-import CustomDropdown from '../general/CustomDropdown';
-import AsyncStorage from '@react-native-async-storage/async-storage';
 import checkInputs from '@/utils/checkInputs';
-import checkName from '@/utils/exercise/checkName';
 import type { appContextType } from '@/app/_layout';
 import { appContext } from '@/app/_layout';
+import ExerciseCategoryDropdown from './ExerciseCategoryDropdown';
 
 const CreateExerciseModal = () => {
     const { addExercise } = useContext(appContext) as appContextType;
@@ -39,28 +37,15 @@ const CreateExerciseModal = () => {
 
     const createNewExercise = async () => {
         try {
+            const formated = { ...newExercise, name: newExercise.name.trim() };
             //check inputs
-            const emptyInputs = checkInputs(newExercise);
+            const emptyInputs = checkInputs(formated);
             if (emptyInputs) {
                 return Alert.alert('Field is missing', `${emptyInputs[0]}`);
             }
-            const exercises = await AsyncStorage.getItem('exercises');
-            const exercisesParsed: exerciseType[] = exercises ? JSON.parse(exercises) : [];
-            //checking if name exists
-            const isNameExist = checkName(newExercise.name, exercisesParsed);
-            if (isNameExist) {
-                return Alert.alert(
-                    'Exercise name already exists',
-                    'Pleas choose something different'
-                );
-            }
-
-            await AsyncStorage.setItem(
-                'exercises',
-                JSON.stringify([...exercisesParsed, newExercise])
-            );
+            const isSuccess = await addExercise(formated);
+            if (!isSuccess) return;
             changeVisibility();
-            addExercise(newExercise);
             setNewExercise({ name: '', category: 'any', history: [] });
         } catch (e) {
             console.log(e);
@@ -70,15 +55,6 @@ const CreateExerciseModal = () => {
         }
     };
 
-    const dropdownOptions: exerciseCategories[] = [
-        'any',
-        'arms',
-        'back',
-        'chest',
-        'core',
-        'legs',
-        'shoulders',
-    ];
     return (
         <>
             <Button handleClick={changeVisibility}>
@@ -97,17 +73,9 @@ const CreateExerciseModal = () => {
                         handleChange={handleChange}
                         label="Exercise Name"
                     ></Input>
-                    <CustomDropdown
-                        label="Select category"
-                        handleChange={handleDropdown}
-                        placeholder="Select Category"
-                        data={dropdownOptions.map((category) => {
-                            return {
-                                label: category.slice(0, 1).toUpperCase().concat(category.slice(1)),
-                                value: category,
-                            };
-                        })}
-                        value={newExercise.category}
+                    <ExerciseCategoryDropdown
+                        handleDropdown={handleDropdown}
+                        selectedCategory={newExercise.category}
                     />
                     <Button text="Create Exercise" handleClick={createNewExercise}></Button>
                 </View>

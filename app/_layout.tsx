@@ -2,10 +2,12 @@ import { Stack } from 'expo-router';
 import { createContext, useState, useEffect } from 'react';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import type { exerciseType } from './(tabs)/excercises';
+import checkName from '@/utils/exercise/checkName';
+import { Alert } from 'react-native';
 
 type appContextType = {
     exercises: exerciseType[];
-    addExercise: (exercise: exerciseType) => void;
+    addExercise: (exercise: exerciseType) => Promise<boolean>;
 };
 
 const appContext = createContext<appContextType | null>(null);
@@ -13,7 +15,18 @@ const appContext = createContext<appContextType | null>(null);
 export default function RootLayout() {
     const [exercises, setExercises] = useState<exerciseType[]>([]);
 
-    const addExercise = (exercise: exerciseType) => {
+    const addExercise = async (exercise: exerciseType):Promise<boolean> => {
+        const exercises = await AsyncStorage.getItem('exercises');
+        const exercisesParsed: exerciseType[] = exercises ? JSON.parse(exercises) : [];
+        //checking if name exists
+        const isNameExist = checkName(exercise.name, exercisesParsed);
+        if (isNameExist) {
+            Alert.alert('Name already in use')
+            return false
+        }
+
+        await AsyncStorage.setItem('exercises', JSON.stringify([...exercisesParsed, exercise]));
+
         setExercises((prev) => {
             if (prev) {
                 return [...prev, exercise];
@@ -21,6 +34,7 @@ export default function RootLayout() {
                 return [exercise];
             }
         });
+        return true
     };
 
     useEffect(() => {
