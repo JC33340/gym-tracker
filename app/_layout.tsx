@@ -4,19 +4,26 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import type { exerciseType } from './(tabs)/excercises';
 import checkName from '@/utils/exercise/checkName';
 import { Alert } from 'react-native';
-import { stripBaseUrl } from 'expo-router/build/fork/getStateFromPath-forks';
+import type { currentSessionType } from './(tabs)';
 
 type appContextType = {
     exercises: exerciseType[];
     addExercise: (exercise: exerciseType) => Promise<boolean>;
     editExercise: (exercise: exerciseType) => Promise<boolean>;
     deleteExercise: (exercise: exerciseType) => Promise<boolean>;
+    isWorkout: boolean;
+    workoutInfo: currentSessionType | null;
+
+    startWorkout: () => void;
+    cancelWorkout: () => void;
 };
 
 const appContext = createContext<appContextType | null>(null);
 
 export default function RootLayout() {
     const [exercises, setExercises] = useState<exerciseType[]>([]);
+    const [isWorkout, setIsWorkout] = useState<boolean>(false);
+    const [workoutInfo, setWorkoutInfo] = useState<currentSessionType | null>(null);
 
     //function for adding an exercise
     const addExercise = async (exercise: exerciseType): Promise<boolean> => {
@@ -73,6 +80,25 @@ export default function RootLayout() {
         }
     };
 
+    //starting the workout
+    const startWorkout = () => {
+        setIsWorkout(true);
+        setWorkoutInfo({
+            startTime: Date.now(),
+            endTime: null,
+            exercise: [],
+        });
+    };
+
+    //cancelling a workout
+    const cancelWorkout = () => {
+        setWorkoutInfo(null);
+        setIsWorkout(false);
+    };
+
+    //add an exercise to the workout
+    const addExerciseToWorkout = (excercises: exerciseType) => {};
+
     useEffect(() => {
         const getLocalStorage = async () => {
             const localExercise = await AsyncStorage.getItem('exercises');
@@ -84,7 +110,18 @@ export default function RootLayout() {
     }, []);
 
     return (
-        <appContext.Provider value={{ exercises, addExercise, editExercise, deleteExercise }}>
+        <appContext.Provider
+            value={{
+                exercises,
+                addExercise,
+                editExercise,
+                deleteExercise,
+                isWorkout,
+                startWorkout,
+                workoutInfo,
+                cancelWorkout,
+            }}
+        >
             <Stack screenOptions={{ headerShown: false }}>
                 <Stack.Screen name="(tabs)" />
             </Stack>

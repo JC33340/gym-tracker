@@ -35,6 +35,7 @@ const ModalWrapper = ({
                                             iconStyle="solid"
                                             size={20}
                                             color={Colors.light.unFocused}
+                                            style={style.cross}
                                         />
                                     </TouchableOpacity>
                                 )}
@@ -67,6 +68,12 @@ const style = StyleSheet.create({
     },
     crossContainer: {
         alignItems: 'flex-end',
+    },
+    cross: {
+        backgroundColor: Colors.light.lightGray,
+        paddingVertical: '2%',
+        paddingHorizontal: '2%',
+        borderRadius: '20%',
     },
 });
 

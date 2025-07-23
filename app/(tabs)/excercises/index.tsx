@@ -2,7 +2,6 @@ import { View, Text, StyleSheet } from 'react-native';
 import Button from '@/components/general/Button';
 import PageWrapper from '@/components/general/PageWrapper';
 import Header from '@/components/general/Header';
-import { Colors } from '@/constants/Colors';
 import CreateExerciseModal from '@/components/exerciseComponents/CreateExerciseModal';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import ExerciseDisplay from '@/components/exerciseComponents/ExerciseDisplay';
@@ -13,8 +12,10 @@ type exerciseType = {
     id: string;
     name: string;
     category: exerciseCategories;
-    history: { sets: []; date: string }[];
+    history: setType[];
 };
+
+type setType = { sets: { weight: number; reps: number }[]; date: number };
 
 const ExercisePage = () => {
     return (
@@ -60,4 +61,4 @@ const style = StyleSheet.create({
 
 export default ExercisePage;
 
-export type { exerciseType, exerciseCategories };
+export type { exerciseType, exerciseCategories, setType };
