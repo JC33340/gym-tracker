@@ -6,16 +6,25 @@ type ButtonPropType = {
     children?: React.ReactNode;
     handleClick?: () => void;
     backgroundColor?: string;
+    disabled?: boolean;
 };
 
-const Button = ({ text, handleClick, children, backgroundColor }: ButtonPropType) => {
+const Button = ({
+    text,
+    handleClick,
+    children,
+    backgroundColor,
+    disabled = false,
+}: ButtonPropType) => {
     return (
         <TouchableOpacity
             style={{
                 ...styles.container,
                 backgroundColor: backgroundColor ?? styles.container.backgroundColor,
+                opacity: disabled ? 0.5 : 1,
             }}
             onPress={handleClick}
+            disabled={disabled}
         >
             {children}
             {text && <Text style={styles.text}>{text}</Text>}
@@ -33,6 +42,8 @@ const styles = StyleSheet.create({
         paddingVertical: 10,
         justifyContent: 'center',
         alignItems: 'center',
+        flexDirection: 'row',
+        columnGap: 10,
     },
     text: {
         color: Colors.light.secondary,

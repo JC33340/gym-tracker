@@ -5,6 +5,7 @@ import type { exerciseType } from './(tabs)/excercises';
 import checkName from '@/utils/exercise/checkName';
 import { Alert } from 'react-native';
 import type { currentSessionType } from './(tabs)';
+import sortExercises from '@/utils/exercise/sortExercises';
 
 type appContextType = {
     exercises: exerciseType[];
@@ -13,9 +14,9 @@ type appContextType = {
     deleteExercise: (exercise: exerciseType) => Promise<boolean>;
     isWorkout: boolean;
     workoutInfo: currentSessionType | null;
-
     startWorkout: () => void;
     cancelWorkout: () => void;
+    addExerciseToWorkout: (excercise: exerciseType) => void;
 };
 
 const appContext = createContext<appContextType | null>(null);
@@ -36,11 +37,13 @@ export default function RootLayout() {
             return false;
         }
 
-        await AsyncStorage.setItem('exercises', JSON.stringify([...exercisesParsed, exercise]));
+        const sortedArr = sortExercises([...exercisesParsed, exercise]);
+
+        await AsyncStorage.setItem('exercises', JSON.stringify(sortedArr));
 
         setExercises((prev) => {
             if (prev) {
-                return [...prev, exercise];
+                return sortedArr;
             } else {
                 return [exercise];
             }
@@ -97,13 +100,39 @@ export default function RootLayout() {
     };
 
     //add an exercise to the workout
-    const addExerciseToWorkout = (excercises: exerciseType) => {};
+    const addExerciseToWorkout = (excercise: exerciseType) => {
+        setWorkoutInfo((prev) => {
+            if (prev) {
+                //check if workout already includes exercise
+                const check = prev.exercise.filter((existing) => existing.id === excercise.id);
+                if (check.length) {
+                    return { ...prev };
+                }
+                return {
+                    ...prev,
+                    exercise: [
+                        ...prev.exercise,
+                        {
+                            id: excercise.id,
+                            name: excercise.name,
+                            sets: { sets: [], date: Date.now() },
+                        },
+                    ],
+                };
+            } else {
+                return prev;
+            }
+        });
+    };
 
     useEffect(() => {
         const getLocalStorage = async () => {
             const localExercise = await AsyncStorage.getItem('exercises');
-            const localExercisesParsed = localExercise ? JSON.parse(localExercise) : [];
-            setExercises(localExercisesParsed);
+            const localExercisesParsed: exerciseType[] = localExercise
+                ? JSON.parse(localExercise)
+                : [];
+            const sortedArr = sortExercises(localExercisesParsed);
+            setExercises(sortedArr);
         };
 
         getLocalStorage();
@@ -120,6 +149,7 @@ export default function RootLayout() {
                 startWorkout,
                 workoutInfo,
                 cancelWorkout,
+                addExerciseToWorkout,
             }}
         >
             <Stack screenOptions={{ headerShown: false }}>

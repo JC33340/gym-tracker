@@ -15,7 +15,7 @@ const ExerciseItem = ({ exercise }: exerciseItemType) => {
                 <SmallHeader text={exercise.name} />
                 <Text style={style.category}>{exercise.category}</Text>
             </View>
-            <View>
+            <View style={style.buttonWrapper}>
                 <EditExerciseModal exercise={exercise} />
             </View>
         </View>
@@ -32,6 +32,7 @@ const style = StyleSheet.create({
         flexDirection: 'row',
         justifyContent: 'space-between',
         alignItems: 'center',
+        width: '100%',
     },
     leftSide: {
         rowGap: 5,
@@ -44,6 +45,9 @@ const style = StyleSheet.create({
         fontSize: 20,
         opacity: 0.5,
         textTransform: 'capitalize',
+    },
+    buttonWrapper: {
+        width: '20%',
     },
 });
 

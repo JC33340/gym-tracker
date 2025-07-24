@@ -5,6 +5,7 @@ import Header from '../general/Header';
 import { useContext } from 'react';
 import { appContext } from '@/app/_layout';
 import Timer from './Timer';
+import AddExerciseModal from './AddExerciseModal';
 
 const WorkoutTemplate = () => {
     const context = useContext(appContext);
@@ -19,11 +20,13 @@ const WorkoutTemplate = () => {
                 handleClick={() => null}
                 backgroundColor={Colors.light.green}
             ></Button>
+            <AddExerciseModal />
             <Button
                 text="Cancel Workout"
                 handleClick={context?.cancelWorkout}
                 backgroundColor={Colors.light.crimson}
             />
+            <Button text="check shit" handleClick={() => console.log(context?.workoutInfo)} />
         </View>
     );
 };

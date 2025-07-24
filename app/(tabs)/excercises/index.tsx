@@ -1,4 +1,4 @@
-import { View, Text, StyleSheet } from 'react-native';
+import { View, ScrollView, Text, StyleSheet } from 'react-native';
 import Button from '@/components/general/Button';
 import PageWrapper from '@/components/general/PageWrapper';
 import Header from '@/components/general/Header';
@@ -43,6 +43,7 @@ const ExercisePage = () => {
 const style = StyleSheet.create({
     container: {
         rowGap: 40,
+        flex: 1,
     },
     createExerciseContainer: {
         rowGap: 20,
@@ -56,6 +57,7 @@ const style = StyleSheet.create({
     },
     exerciseDisplayWrapper: {
         rowGap: 10,
+        flex: 1,
     },
 });
 

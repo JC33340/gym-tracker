@@ -12,6 +12,7 @@ const style = StyleSheet.create({
     name: {
         fontSize: 25,
         fontWeight: 600,
+        textTransform: 'capitalize',
     },
 });
 

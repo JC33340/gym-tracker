@@ -48,7 +48,7 @@ const CreateExerciseModal = () => {
             const isSuccess = await addExercise(formated);
             if (!isSuccess) return;
             changeVisibility();
-            setNewExercise({ id: '', name: '', category: 'any', history: [] });
+            setNewExercise({ id: uuid.v4(), name: '', category: 'any', history: [] });
         } catch (e) {
             console.log(e);
             Alert.alert('Sorry something went wrong', 'Unable to create exercise', [

@@ -13,6 +13,7 @@ const style = StyleSheet.create({
         paddingHorizontal: '5%',
         paddingVertical: '5%',
         position: 'relative',
+        flex: 1,
     },
 });
 

@@ -56,6 +56,7 @@ const style = StyleSheet.create({
         justifyContent: 'center',
         alignItems: 'center',
         paddingHorizontal: '20%',
+        paddingVertical: '100%',
     },
     container: {
         borderWidth: 2,
@@ -65,6 +66,7 @@ const style = StyleSheet.create({
         borderRadius: 10,
         rowGap: 10,
         backgroundColor: Colors.light.secondary,
+        overflow: 'hidden',
     },
     crossContainer: {
         alignItems: 'flex-end',
