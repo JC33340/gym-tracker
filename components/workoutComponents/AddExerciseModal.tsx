@@ -1,4 +1,4 @@
-import { View, Text, StyleSheet } from 'react-native';
+import { View, StyleSheet } from 'react-native';
 import { useContext, useEffect, useState, createContext } from 'react';
 import { appContext } from '@/app/_layout';
 import ModalWrapper from '../general/ModalWrapper';
@@ -7,6 +7,9 @@ import FontAwesome6 from '@react-native-vector-icons/fontawesome6';
 import { Colors } from '@/constants/Colors';
 import Header from '../general/Header';
 import ExerciseList from './ExerciseList';
+import ExerciseCategoryDropdown from '../exerciseComponents/ExerciseCategoryDropdown';
+import { exerciseType, type exerciseCategories } from '@/app/(tabs)/excercises';
+import Input from '../general/Input';
 
 type exerciseModalContextType = {
     selectedExercisesId: string[];
@@ -23,6 +26,28 @@ const AddExerciseModal = () => {
     const [selectedExercisesId, setSelectedExercisesId] = useState<string[]>([]);
 
     const [disableAddButton, setDisableAddButton] = useState<boolean>(true);
+
+    const [searchCategories, setSearchCategories] = useState<exerciseCategories>('any');
+
+    const [displayExercises, setDisplayExercises] = useState<exerciseType[] | undefined>(
+        context?.exercises
+    );
+
+    const [searchInputValue, setSearchInputValue] = useState<string>('');
+
+    //change the exercises if search categories are changed
+    useEffect(() => {
+        let filter = context?.exercises.filter((item) =>
+            item.name.toLowerCase().includes(searchInputValue.toLowerCase())
+        );
+        if (searchCategories === 'any') {
+            setDisplayExercises(context?.exercises);
+        } else {
+            filter = filter?.filter((item) => item.category === searchCategories);
+        }
+
+        setDisplayExercises(filter);
+    }, [searchCategories, searchInputValue]);
 
     const handlePress = (id: string) => {
         setSelectedExercisesId((prev) => {
@@ -54,6 +79,14 @@ const AddExerciseModal = () => {
         setDisableAddButton(true);
     };
 
+    const handleSearchDropDown = (item: string | number) => {
+        setSearchCategories(item as exerciseCategories);
+    };
+
+    const handleTextChange = (text: string) => {
+        setSearchInputValue(text);
+    };
+
     return (
         <>
             <Button
@@ -80,11 +113,22 @@ const AddExerciseModal = () => {
                         disabled={disableAddButton}
                         handleClick={handleAddExercises}
                     />
+                    <ExerciseCategoryDropdown
+                        handleDropdown={handleSearchDropDown}
+                        selectedCategory={searchCategories}
+                    />
+                    <Input
+                        placeholder="Search"
+                        label="Search"
+                        handleChange={handleTextChange}
+                        value={searchInputValue}
+                    />
+
                     <exerciseModalContext.Provider
                         value={{ selectedExercisesId, selectExercise: handlePress }}
                     >
                         <View style={styles.exerciseListContainer}>
-                            <ExerciseList exercises={context?.exercises ?? []} />
+                            <ExerciseList exercises={displayExercises ?? []} />
                         </View>
                     </exerciseModalContext.Provider>
                 </View>
@@ -102,7 +146,7 @@ const styles = StyleSheet.create({
         borderColor: Colors.light.lightGray,
         padding: '4%',
         borderRadius: 10,
-        height: '80%',
+        height: 400,
     },
 });
 

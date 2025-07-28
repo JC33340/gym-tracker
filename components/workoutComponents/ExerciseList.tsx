@@ -10,7 +10,7 @@ type ExerciseListType = {
 const ExerciseList = ({ exercises }: ExerciseListType) => {
     const split = splitCategories(exercises);
     return (
-        <View style={{ height: '100%' }}>
+        <View>
             <ScrollView contentContainerStyle={styles.container}>
                 {split.map((item, i) => (
                     <CategoryDisplaySection key={i} exercises={item} />
