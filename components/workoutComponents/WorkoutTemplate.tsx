@@ -1,4 +1,4 @@
-import { View, Text, StyleSheet } from 'react-native';
+import { View, Text, StyleSheet, ScrollView } from 'react-native';
 import Button from '../general/Button';
 import { Colors } from '@/constants/Colors';
 import Header from '../general/Header';
@@ -6,12 +6,13 @@ import { useContext } from 'react';
 import { appContext } from '@/app/_layout';
 import Timer from './Timer';
 import AddExerciseModal from './AddExerciseModal';
+import ActiveWorkoutSelectedExerciseList from './ActiveWorkoutSelectedExercisesList';
 
 const WorkoutTemplate = () => {
     const context = useContext(appContext);
 
     return (
-        <View>
+        <ScrollView style={style.container}>
             <Header text="Current Workout" />
             <Timer startTime={context?.workoutInfo?.startTime ?? null} />
 
@@ -27,14 +28,14 @@ const WorkoutTemplate = () => {
                 backgroundColor={Colors.light.crimson}
             />
             <Button text="check shit" handleClick={() => console.log(context?.workoutInfo)} />
-        </View>
+            <ActiveWorkoutSelectedExerciseList />
+        </ScrollView>
     );
 };
 
 const style = StyleSheet.create({
-    header: {
-        flexDirection: 'row',
-        justifyContent: 'space-between',
+    container: {
+        overflow: 'scroll',
     },
 });
 

@@ -24,12 +24,12 @@ const ExercisePage = () => {
                 <View style={style.createExerciseContainer}>
                     <Header text="Create a new exercise"></Header>
                     <CreateExerciseModal />
-                    <Button
+                    {/* <Button
                         text="Clear"
                         handleClick={async () => {
                             await AsyncStorage.clear();
                         }}
-                    ></Button>
+                    ></Button> */}
                 </View>
                 <View style={style.exerciseDisplayWrapper}>
                     <Header text="All exercises" />

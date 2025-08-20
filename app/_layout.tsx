@@ -6,6 +6,7 @@ import checkName from '@/utils/exercise/checkName';
 import { Alert } from 'react-native';
 import type { currentSessionType } from './(tabs)';
 import sortExercises from '@/utils/exercise/sortExercises';
+import uuid from 'react-native-uuid';
 
 type appContextType = {
     exercises: exerciseType[];
@@ -17,6 +18,13 @@ type appContextType = {
     startWorkout: () => void;
     cancelWorkout: () => void;
     addExerciseToWorkout: (excercise: exerciseType) => void;
+    addSetToActiveWorkoutExercise: (id: string) => void;
+    handleUserInputActiveWorkout: (
+        id: string,
+        setNum: number,
+        text: string,
+        item: 'weight' | 'reps'
+    ) => void;
 };
 
 const appContext = createContext<appContextType | null>(null);
@@ -90,6 +98,7 @@ export default function RootLayout() {
             startTime: Date.now(),
             endTime: null,
             exercise: [],
+            id: uuid.v4(),
         });
     };
 
@@ -115,12 +124,52 @@ export default function RootLayout() {
                         {
                             id: excercise.id,
                             name: excercise.name,
-                            sets: { sets: [], date: Date.now() },
+                            sets: { sets: [{ weight: 0, reps: 0 }], date: Date.now() },
                         },
                     ],
                 };
             } else {
                 return prev;
+            }
+        });
+    };
+
+    //add a set to the exercise
+    const addSetToActiveWorkoutExercise = (id: string) => {
+        setWorkoutInfo((prev) => {
+            if (prev) {
+                const newA = { ...prev };
+                const index = prev?.exercise.findIndex((item) => item.id === id);
+                newA.exercise[index].sets.sets.push({ weight: 0, reps: 0 });
+                return newA;
+            } else {
+                return prev;
+            }
+        });
+    };
+
+    //handling user input into the sets
+    const handleUserInputActiveWorkout = (
+        id: string,
+        setNum: number,
+        text: string,
+        item: 'weight' | 'reps'
+    ) => {
+        setWorkoutInfo((prev) => {
+            if (prev) {
+                const index = prev.exercise.findIndex((item) => item.id === id);
+
+                const newA = { ...prev };
+                const num = Number(text);
+                if (!num) return prev;
+                if (item === 'reps') {
+                    newA.exercise[index].sets.sets[setNum].reps = num;
+                } else {
+                    newA.exercise[index].sets.sets[setNum].weight = num;
+                }
+                return newA;
+            } else {
+                return null;
             }
         });
     };
@@ -150,6 +199,8 @@ export default function RootLayout() {
                 workoutInfo,
                 cancelWorkout,
                 addExerciseToWorkout,
+                addSetToActiveWorkoutExercise,
+                handleUserInputActiveWorkout,
             }}
         >
             <Stack screenOptions={{ headerShown: false }}>

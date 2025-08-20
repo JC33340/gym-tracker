@@ -7,19 +7,20 @@ import type { setType } from './excercises';
 import WorkoutTemplate from '@/components/workoutComponents/WorkoutTemplate';
 
 type currentSessionType = {
+    id: string;
     startTime: number;
     endTime: number | null;
-    exercise: {
-        id: string;
-        name: string;
-        sets: setType;
-    }[];
+    exercise: currentSessionExerciseItemType[];
+};
+
+type currentSessionExerciseItemType = {
+    id: string;
+    name: string;
+    sets: setType;
 };
 
 const Homepage = () => {
     const context = useContext(appContext);
-
-    const handleStartWorkout = () => {};
 
     return (
         <PageWrapper>
@@ -35,4 +36,4 @@ const Homepage = () => {
 
 export default Homepage;
 
-export type { currentSessionType };
+export type { currentSessionType, currentSessionExerciseItemType };

@@ -4,19 +4,21 @@ import { Text, View, TextInput, StyleSheet } from 'react-native';
 type InputType = {
     placeholder: string;
     handleChange: (text: string) => void;
-    label: string;
+    label?: string;
     value: string;
+    numberPad?: boolean;
 };
 
-const Input = ({ placeholder, handleChange, label, value }: InputType) => {
+const Input = ({ placeholder, handleChange, label, value, numberPad = false }: InputType) => {
     return (
         <View style={style.container}>
-            <Text style={style.label}>{label}</Text>
+            {label && <Text style={style.label}>{label}</Text>}
             <TextInput
                 style={style.input}
                 placeholder={placeholder}
                 onChangeText={(text) => handleChange(text)}
                 value={value}
+                keyboardType={numberPad ? 'decimal-pad' : 'default'}
             ></TextInput>
         </View>
     );
