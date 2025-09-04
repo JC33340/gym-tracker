@@ -8,7 +8,7 @@ import { Colors } from '@/constants/Colors';
 import Header from '../general/Header';
 import ExerciseList from './ExerciseList';
 import ExerciseCategoryDropdown from '../exerciseComponents/ExerciseCategoryDropdown';
-import { exerciseType, type exerciseCategories } from '@/app/(tabs)/excercises';
+import type { exerciseType, exerciseCategories } from '@/types';
 import Input from '../general/Input';
 
 type exerciseModalContextType = {
@@ -47,7 +47,7 @@ const AddExerciseModal = () => {
         }
 
         setDisplayExercises(filter);
-    }, [searchCategories, searchInputValue]);
+    }, [searchCategories, searchInputValue, context?.exercises]);
 
     const handlePress = (id: string) => {
         setSelectedExercisesId((prev) => {

@@ -1,4 +1,4 @@
-import { exerciseType } from '@/app/(tabs)/excercises';
+import { exerciseType } from '@/types';
 import { StyleSheet, Text, View } from 'react-native';
 import SmallHeader from '../general/SmallHeader';
 import SelectExerciseItem from './SelectExerciseItem';

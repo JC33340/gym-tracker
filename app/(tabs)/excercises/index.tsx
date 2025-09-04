@@ -5,17 +5,7 @@ import Header from '@/components/general/Header';
 import CreateExerciseModal from '@/components/exerciseComponents/CreateExerciseModal';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import ExerciseDisplay from '@/components/exerciseComponents/ExerciseDisplay';
-
-type exerciseCategories = 'any' | 'arms' | 'chest' | 'back' | 'legs' | 'core' | 'shoulders';
-
-type exerciseType = {
-    id: string;
-    name: string;
-    category: exerciseCategories;
-    history: setType[];
-};
-
-type setType = { sets: { weight: number; reps: number }[]; date: number };
+import type { exerciseCategories, exerciseType, setType } from '@/types';
 
 const ExercisePage = () => {
     return (
@@ -24,12 +14,12 @@ const ExercisePage = () => {
                 <View style={style.createExerciseContainer}>
                     <Header text="Create a new exercise"></Header>
                     <CreateExerciseModal />
-                    {/* <Button
+                    <Button
                         text="Clear"
                         handleClick={async () => {
                             await AsyncStorage.clear();
                         }}
-                    ></Button> */}
+                    ></Button>
                 </View>
                 <View style={style.exerciseDisplayWrapper}>
                     <Header text="All exercises" />
@@ -62,5 +52,3 @@ const style = StyleSheet.create({
 });
 
 export default ExercisePage;
-
-export type { exerciseType, exerciseCategories, setType };

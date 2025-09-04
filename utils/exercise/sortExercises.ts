@@ -1,4 +1,4 @@
-import type { exerciseType } from '@/app/(tabs)/excercises';
+import type { exerciseType } from '@/types';
 
 const sortExercises = (exercises: exerciseType[]) => {
     return exercises.sort((a, b) => {

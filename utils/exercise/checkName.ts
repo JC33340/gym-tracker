@@ -1,4 +1,4 @@
-import type { exerciseType } from '@/app/(tabs)/excercises';
+import type { exerciseType } from '@/types';
 
 const checkName = (name: string, existing: exerciseType[]) => {
     for (let exercise of existing) {

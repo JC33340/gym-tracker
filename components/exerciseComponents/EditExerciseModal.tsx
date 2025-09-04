@@ -6,8 +6,7 @@ import { Colors } from '@/constants/Colors';
 import { useState, useContext } from 'react';
 import Input from '../general/Input';
 import SmallHeader from '../general/SmallHeader';
-import type { exerciseType } from '@/app/(tabs)/excercises';
-import type { exerciseCategories } from '@/app/(tabs)/excercises';
+import type { exerciseType, exerciseCategories } from '@/types';
 import ExerciseCategoryDropdown from './ExerciseCategoryDropdown';
 import { appContext } from '@/app/_layout';
 

@@ -18,7 +18,7 @@ const WorkoutTemplate = () => {
 
             <Button
                 text="Finish Workout"
-                handleClick={() => null}
+                handleClick={context?.finishActiveWorkout}
                 backgroundColor={Colors.light.green}
             ></Button>
             <AddExerciseModal />
@@ -27,7 +27,16 @@ const WorkoutTemplate = () => {
                 handleClick={context?.cancelWorkout}
                 backgroundColor={Colors.light.crimson}
             />
-            <Button text="check shit" handleClick={() => console.log(context?.workoutInfo)} />
+            <Button
+                text="check shit"
+                handleClick={() => console.log(context?.workoutInfo, context?.exercises)}
+            />
+            <Button
+                text="check exercises"
+                handleClick={() =>
+                    console.log(context?.exercises[0].history, context?.exercises[1].history)
+                }
+            />
             <ActiveWorkoutSelectedExerciseList />
         </ScrollView>
     );

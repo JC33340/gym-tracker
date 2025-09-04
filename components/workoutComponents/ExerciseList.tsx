@@ -1,5 +1,5 @@
 import { View, Text, StyleSheet, ScrollView } from 'react-native';
-import type { exerciseType } from '@/app/(tabs)/excercises';
+import type { exerciseType } from '@/types';
 import splitCategories from '@/utils/exercise/splitCategories';
 import CategoryDisplaySection from './CategoryDisplaySection';
 

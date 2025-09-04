@@ -1,4 +1,4 @@
-import type { exerciseType } from '@/app/(tabs)/excercises';
+import type { exerciseType } from '@/types';
 import { View, Text, StyleSheet } from 'react-native';
 import { Colors } from '@/constants/Colors';
 import EditExerciseModal from './EditExerciseModal';

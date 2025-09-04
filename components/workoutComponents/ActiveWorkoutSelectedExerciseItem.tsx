@@ -1,5 +1,5 @@
 import { View, Text, StyleSheet } from 'react-native';
-import type { currentSessionExerciseItemType } from '@/app/(tabs)';
+import type { currentSessionExerciseItemType } from '@/types';
 import { Colors } from '@/constants/Colors';
 import SmallHeader from '../general/SmallHeader';
 import Button from '../general/Button';
@@ -16,11 +16,19 @@ type ActiveWorkoutSelectedExerciseItemType = {
 const ActiveWorkoutSelectedExerciseItem = ({ exercise }: ActiveWorkoutSelectedExerciseItemType) => {
     const context = useContext(appContext) as appContextType;
 
+    //find history of the current exercise
+    const history = context.exercises
+        .filter((item) => item.id === exercise.id)[0]
+        .history.toReversed()[0];
+
     return (
         <View style={styles.container}>
             <SmallHeader text={exercise.name} />
             <View style={styles.setList}>
                 <View style={styles.columnTitlesContainer}>
+                    <View style={styles.columnTitlesContainerItem}>
+                        <Text style={styles.columnTitles}>Previous</Text>
+                    </View>
                     <View style={styles.columnTitlesContainerItem}>
                         <Text style={styles.columnTitles}>Weight</Text>
                     </View>
@@ -31,7 +39,14 @@ const ActiveWorkoutSelectedExerciseItem = ({ exercise }: ActiveWorkoutSelectedEx
                 {exercise.sets.sets.map((item, i) => {
                     return (
                         <View key={i} style={styles.infoContainer}>
-                            <View style={styles.infoItem}>
+                            <View style={styles.prevInfo}>
+                                <Text style={styles.prevInfoText}>
+                                    {history.sets[i]
+                                        ? `${history.sets[i].weight} KG x ${history.sets[i].reps}`
+                                        : '-'}
+                                </Text>
+                            </View>
+                            <View style={{ flex: 3 }}>
                                 <Input
                                     placeholder="Weight"
                                     value={!item.weight ? '' : String(item.weight)}
@@ -46,26 +61,53 @@ const ActiveWorkoutSelectedExerciseItem = ({ exercise }: ActiveWorkoutSelectedEx
                                     numberPad={true}
                                 />
                             </View>
-                            <View style={styles.infoItem}>
-                                <Input
-                                    placeholder="Reps"
-                                    value={!item.reps ? '' : String(item.reps)}
-                                    handleChange={(text) =>
-                                        context.handleUserInputActiveWorkout(
-                                            exercise.id,
-                                            i,
-                                            text,
-                                            'reps'
-                                        )
-                                    }
-                                    numberPad={true}
-                                />
+                            <View style={{ flex: 3 }}>
+                                <View
+                                    style={{
+                                        flexDirection: 'row',
+                                        columnGap: 5,
+                                        alignItems: 'center',
+                                    }}
+                                >
+                                    <View style={{ flex: 2 }}>
+                                        <Input
+                                            placeholder="Reps"
+                                            value={!item.reps ? '' : String(item.reps)}
+                                            handleChange={(text) =>
+                                                context.handleUserInputActiveWorkout(
+                                                    exercise.id,
+                                                    i,
+                                                    text,
+                                                    'reps'
+                                                )
+                                            }
+                                            numberPad={true}
+                                        />
+                                    </View>
+                                    <View style={{ flex: 1 }}>
+                                        <Button
+                                            backgroundColor={Colors.light.crimson}
+                                            handleClick={() =>
+                                                context.changeSetsToActiveWorkoutExercise(
+                                                    exercise.id,
+                                                    i
+                                                )
+                                            }
+                                        >
+                                            <FontAwesome6
+                                                name="trash-can"
+                                                iconStyle="solid"
+                                                color={Colors.light.secondary}
+                                            />
+                                        </Button>
+                                    </View>
+                                </View>
                             </View>
                         </View>
                     );
                 })}
             </View>
-            <Button handleClick={() => context.addSetToActiveWorkoutExercise(exercise.id)}>
+            <Button handleClick={() => context.changeSetsToActiveWorkoutExercise(exercise.id)}>
                 <FontAwesome6 name="plus" iconStyle="solid" color={Colors.light.secondary} />
             </Button>
         </View>
@@ -87,8 +129,16 @@ const styles = StyleSheet.create({
     setList: {
         rowGap: 5,
     },
-    infoItem: {
-        flex: 1,
+    prevInfo: {
+        flex: 2,
+        backgroundColor: Colors.light.lightGray,
+        borderRadius: 4,
+        alignItems: 'center',
+        justifyContent: 'center',
+        padding: 5,
+    },
+    prevInfoText: {
+        color: Colors.light.unFocused,
     },
     columnTitlesContainer: {
         flexDirection: 'row',

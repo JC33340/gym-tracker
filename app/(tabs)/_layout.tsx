@@ -54,9 +54,9 @@ export default function TabLayout() {
                 }}
             />
             <Tabs.Screen
-                name="settings/index"
+                name="history/index"
                 options={{
-                    title: 'Settings',
+                    title: 'History',
                     tabBarIcon: ({ focused }) => (
                         <FontAwesome6
                             name="gear"

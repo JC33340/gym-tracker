@@ -3,21 +3,9 @@ import Button from '@/components/general/Button';
 import PageWrapper from '@/components/general/PageWrapper';
 import { useContext } from 'react';
 import { appContext } from '../_layout';
-import type { setType } from './excercises';
+import type { setType } from '@/types';
 import WorkoutTemplate from '@/components/workoutComponents/WorkoutTemplate';
-
-type currentSessionType = {
-    id: string;
-    startTime: number;
-    endTime: number | null;
-    exercise: currentSessionExerciseItemType[];
-};
-
-type currentSessionExerciseItemType = {
-    id: string;
-    name: string;
-    sets: setType;
-};
+import type { currentSessionType, currentSessionExerciseItemType } from '@/types';
 
 const Homepage = () => {
     const context = useContext(appContext);
@@ -35,5 +23,3 @@ const Homepage = () => {
 };
 
 export default Homepage;
-
-export type { currentSessionType, currentSessionExerciseItemType };

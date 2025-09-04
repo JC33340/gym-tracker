@@ -1,5 +1,5 @@
 import CustomDropdown from '../general/CustomDropdown';
-import type { exerciseCategories } from '@/app/(tabs)/excercises';
+import type { exerciseCategories } from '@/types';
 
 type ExerciseCategoryDropdownType = {
     handleDropdown: (item: string | number) => void;

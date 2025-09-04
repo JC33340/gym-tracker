@@ -5,7 +5,7 @@ import FontAwesome6 from '@react-native-vector-icons/fontawesome6';
 import { useState, useContext } from 'react';
 import { Colors } from '@/constants/Colors';
 import Input from '../general/Input';
-import type { exerciseType, exerciseCategories } from '@/app/(tabs)/excercises';
+import type { exerciseType, exerciseCategories } from '@/types';
 import checkInputs from '@/utils/checkInputs';
 import type { appContextType } from '@/app/_layout';
 import { appContext } from '@/app/_layout';

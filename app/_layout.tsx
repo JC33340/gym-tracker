@@ -1,10 +1,9 @@
 import { Stack } from 'expo-router';
 import { createContext, useState, useEffect } from 'react';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import type { exerciseType } from './(tabs)/excercises';
+import type { exerciseType, currentSessionType, workoutHistoryType } from '@/types';
 import checkName from '@/utils/exercise/checkName';
 import { Alert } from 'react-native';
-import type { currentSessionType } from './(tabs)';
 import sortExercises from '@/utils/exercise/sortExercises';
 import uuid from 'react-native-uuid';
 
@@ -18,13 +17,15 @@ type appContextType = {
     startWorkout: () => void;
     cancelWorkout: () => void;
     addExerciseToWorkout: (excercise: exerciseType) => void;
-    addSetToActiveWorkoutExercise: (id: string) => void;
+    changeSetsToActiveWorkoutExercise: (id: string, remove?: number) => void;
     handleUserInputActiveWorkout: (
         id: string,
         setNum: number,
         text: string,
         item: 'weight' | 'reps'
     ) => void;
+    finishActiveWorkout: () => void;
+    workoutHistory: workoutHistoryType | null;
 };
 
 const appContext = createContext<appContextType | null>(null);
@@ -33,6 +34,7 @@ export default function RootLayout() {
     const [exercises, setExercises] = useState<exerciseType[]>([]);
     const [isWorkout, setIsWorkout] = useState<boolean>(false);
     const [workoutInfo, setWorkoutInfo] = useState<currentSessionType | null>(null);
+    const [workoutHistory, setWorkoutHistory] = useState<workoutHistoryType | null>(null);
 
     //function for adding an exercise
     const addExercise = async (exercise: exerciseType): Promise<boolean> => {
@@ -46,8 +48,11 @@ export default function RootLayout() {
         }
 
         const sortedArr = sortExercises([...exercisesParsed, exercise]);
-
-        await AsyncStorage.setItem('exercises', JSON.stringify(sortedArr));
+        try {
+            await AsyncStorage.setItem('exercises', JSON.stringify(sortedArr));
+        } catch (e) {
+            return false;
+        }
 
         setExercises((prev) => {
             if (prev) {
@@ -134,13 +139,17 @@ export default function RootLayout() {
         });
     };
 
-    //add a set to the exercise
-    const addSetToActiveWorkoutExercise = (id: string) => {
+    //adding or removing sets to the exercise
+    const changeSetsToActiveWorkoutExercise = (id: string, remove?: number) => {
         setWorkoutInfo((prev) => {
             if (prev) {
                 const newA = { ...prev };
                 const index = prev?.exercise.findIndex((item) => item.id === id);
-                newA.exercise[index].sets.sets.push({ weight: 0, reps: 0 });
+                if (remove != null) {
+                    newA.exercise[index].sets.sets.splice(remove, 1);
+                } else {
+                    newA.exercise[index].sets.sets.push({ weight: 0, reps: 0 });
+                }
                 return newA;
             } else {
                 return prev;
@@ -160,8 +169,10 @@ export default function RootLayout() {
                 const index = prev.exercise.findIndex((item) => item.id === id);
 
                 const newA = { ...prev };
-                const num = Number(text);
-                if (!num) return prev;
+
+                //if it is not a number then do not update the text
+                const num = text ? Number(text) : 0;
+                if (!num && text) return prev;
                 if (item === 'reps') {
                     newA.exercise[index].sets.sets[setNum].reps = num;
                 } else {
@@ -174,14 +185,87 @@ export default function RootLayout() {
         });
     };
 
+    //finishing the workout and storing the data
+    const finishActiveWorkout = () => {
+        //ensure workout exists
+        if (!workoutInfo) {
+            return Alert.alert('Workout does no exist');
+        }
+
+        //if there are no exercises added
+        if (workoutInfo.exercise.length === 0) {
+            return Alert.alert('No exercises', 'Use cancel workout instead');
+        }
+
+        //checking if there are any unfilled sets returns alert
+        for (let exercise of workoutInfo.exercise) {
+            for (let set of exercise.sets.sets) {
+                if (set.reps < 1 || set.weight < 1) {
+                    return Alert.alert(
+                        `Problem with ${exercise.name}`,
+                        `Reps or Weight is invalid`
+                    );
+                }
+            }
+        }
+
+        //adding sets from active to the history of current exercises
+        setExercises((prev) => {
+            if (workoutInfo?.exercise) {
+                for (let exercise of workoutInfo?.exercise) {
+                    const index = prev.findIndex((item) => exercise.id === item.id);
+                    prev[index].history.push(exercise.sets);
+                }
+            }
+
+            const setLocalStorage = async () => {
+                await AsyncStorage.setItem('exercises', JSON.stringify(exercises));
+            };
+            setLocalStorage();
+
+            return prev;
+        });
+
+        //getting workout history
+        setWorkoutHistory((prev) => {
+            const newPrev = prev ? [...prev] : [];
+            newPrev.push(workoutInfo);
+            const setLocalStorage = async () => {
+                await AsyncStorage.setItem('workoutHistory', JSON.stringify(newPrev));
+            };
+            setLocalStorage();
+            return newPrev;
+        });
+
+        cancelWorkout();
+    };
+
+    //getting exercise information and workout history
     useEffect(() => {
         const getLocalStorage = async () => {
-            const localExercise = await AsyncStorage.getItem('exercises');
-            const localExercisesParsed: exerciseType[] = localExercise
-                ? JSON.parse(localExercise)
-                : [];
-            const sortedArr = sortExercises(localExercisesParsed);
-            setExercises(sortedArr);
+            try {
+                //getting exercise information
+                const localExercise = await AsyncStorage.getItem('exercises');
+                const localExercisesParsed: exerciseType[] = localExercise
+                    ? JSON.parse(localExercise)
+                    : [];
+                const sortedArr = sortExercises(localExercisesParsed);
+                setExercises(sortedArr);
+
+                //getting workout history
+                const localWorkoutHistory = await AsyncStorage.getItem('workoutHistory');
+                const localWorkoutHistoryParsed: workoutHistoryType = localWorkoutHistory
+                    ? JSON.parse(localWorkoutHistory)
+                    : [];
+                console.log(localWorkoutHistoryParsed);
+                setWorkoutHistory(localWorkoutHistoryParsed);
+            } catch (e) {
+                if (e instanceof Error) {
+                    Alert.alert('Sorry something went wrong', e.message);
+                } else {
+                    Alert.alert('Sorry something went wrong', 'Unknown error');
+                }
+            }
         };
 
         getLocalStorage();
@@ -199,8 +283,10 @@ export default function RootLayout() {
                 workoutInfo,
                 cancelWorkout,
                 addExerciseToWorkout,
-                addSetToActiveWorkoutExercise,
+                changeSetsToActiveWorkoutExercise,
                 handleUserInputActiveWorkout,
+                finishActiveWorkout,
+                workoutHistory,
             }}
         >
             <Stack screenOptions={{ headerShown: false }}>

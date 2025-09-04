@@ -1,4 +1,4 @@
-import type { exerciseType } from '@/app/(tabs)/excercises';
+import type { exerciseType } from '@/types';
 import sortExercises from './sortExercises';
 
 const splitCategories = (exercises: exerciseType[]) => {
