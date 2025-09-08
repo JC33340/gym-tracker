@@ -41,8 +41,10 @@ const ActiveWorkoutSelectedExerciseItem = ({ exercise }: ActiveWorkoutSelectedEx
                         <View key={i} style={styles.infoContainer}>
                             <View style={styles.prevInfo}>
                                 <Text style={styles.prevInfoText}>
-                                    {history.sets[i]
-                                        ? `${history.sets[i].weight} KG x ${history.sets[i].reps}`
+                                    {history
+                                        ? history.sets[i]
+                                            ? `${history.sets[i].weight} KG x ${history.sets[i].reps}`
+                                            : '-'
                                         : '-'}
                                 </Text>
                             </View>
@@ -107,9 +109,17 @@ const ActiveWorkoutSelectedExerciseItem = ({ exercise }: ActiveWorkoutSelectedEx
                     );
                 })}
             </View>
-            <Button handleClick={() => context.changeSetsToActiveWorkoutExercise(exercise.id)}>
+            <Button
+                handleClick={() => context.changeSetsToActiveWorkoutExercise(exercise.id)}
+                text="Add set"
+            >
                 <FontAwesome6 name="plus" iconStyle="solid" color={Colors.light.secondary} />
             </Button>
+            <Button
+                handleClick={() => context.removeExerciseFromActiveWorkout(exercise.id)}
+                text="Remove exercise"
+                backgroundColor={Colors.light.crimson}
+            ></Button>
         </View>
     );
 };

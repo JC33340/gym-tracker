@@ -24,7 +24,9 @@ type appContextType = {
         text: string,
         item: 'weight' | 'reps'
     ) => void;
+    removeExerciseFromActiveWorkout: (id: string) => void;
     finishActiveWorkout: () => void;
+
     workoutHistory: workoutHistoryType | null;
 };
 
@@ -185,6 +187,20 @@ export default function RootLayout() {
         });
     };
 
+    //removing an exercise from the active workout
+    const removeExerciseFromActiveWorkout = (id: string) => {
+        setWorkoutInfo((prev) => {
+            if (prev) {
+                const index = prev.exercise.findIndex((item) => item.id === id);
+                const newA = { ...prev };
+                newA.exercise.splice(index, 1);
+                return newA;
+            } else {
+                return null;
+            }
+        });
+    };
+
     //finishing the workout and storing the data
     const finishActiveWorkout = () => {
         //ensure workout exists
@@ -197,13 +213,16 @@ export default function RootLayout() {
             return Alert.alert('No exercises', 'Use cancel workout instead');
         }
 
-        //checking if there are any unfilled sets returns alert
+        //checking if there are any unfilled sets or exercises with no sets
         for (let exercise of workoutInfo.exercise) {
+            if (exercise.sets.sets.length === 0) {
+                return Alert.alert(`Problem in ${exercise.name}`, 'Exercise has no sets');
+            }
             for (let set of exercise.sets.sets) {
                 if (set.reps < 1 || set.weight < 1) {
                     return Alert.alert(
-                        `Problem with ${exercise.name}`,
-                        `Reps or Weight is invalid`
+                        `Problem in ${exercise.name}`,
+                        `Reps or Weight is empty / invalid`
                     );
                 }
             }
@@ -257,7 +276,6 @@ export default function RootLayout() {
                 const localWorkoutHistoryParsed: workoutHistoryType = localWorkoutHistory
                     ? JSON.parse(localWorkoutHistory)
                     : [];
-                console.log(localWorkoutHistoryParsed);
                 setWorkoutHistory(localWorkoutHistoryParsed);
             } catch (e) {
                 if (e instanceof Error) {
@@ -285,6 +303,7 @@ export default function RootLayout() {
                 addExerciseToWorkout,
                 changeSetsToActiveWorkoutExercise,
                 handleUserInputActiveWorkout,
+                removeExerciseFromActiveWorkout,
                 finishActiveWorkout,
                 workoutHistory,
             }}
