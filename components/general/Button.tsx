@@ -7,6 +7,7 @@ type ButtonPropType = {
     handleClick?: () => void;
     backgroundColor?: string;
     disabled?: boolean;
+    size?: 'sm' | 'md';
 };
 
 const Button = ({
@@ -15,6 +16,7 @@ const Button = ({
     children,
     backgroundColor,
     disabled = false,
+    size = 'md',
 }: ButtonPropType) => {
     return (
         <TouchableOpacity
@@ -27,7 +29,9 @@ const Button = ({
             disabled={disabled}
         >
             {children}
-            {text && <Text style={styles.text}>{text}</Text>}
+            {text && (
+                <Text style={{ ...styles.text, fontSize: size === 'md' ? 20 : 12 }}>{text}</Text>
+            )}
         </TouchableOpacity>
     );
 };

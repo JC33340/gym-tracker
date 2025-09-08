@@ -112,6 +112,7 @@ const ActiveWorkoutSelectedExerciseItem = ({ exercise }: ActiveWorkoutSelectedEx
             <Button
                 handleClick={() => context.changeSetsToActiveWorkoutExercise(exercise.id)}
                 text="Add set"
+                size="sm"
             >
                 <FontAwesome6 name="plus" iconStyle="solid" color={Colors.light.secondary} />
             </Button>
@@ -119,6 +120,7 @@ const ActiveWorkoutSelectedExerciseItem = ({ exercise }: ActiveWorkoutSelectedEx
                 handleClick={() => context.removeExerciseFromActiveWorkout(exercise.id)}
                 text="Remove exercise"
                 backgroundColor={Colors.light.crimson}
+                size="sm"
             ></Button>
         </View>
     );
