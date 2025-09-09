@@ -1,0 +1,58 @@
+import ModalWrapper from '@/components/general/ModalWrapper';
+import { View, TouchableOpacity, Text } from 'react-native';
+import { useState, useContext } from 'react';
+import SmallHeader from '@/components/general/SmallHeader';
+import { appContext } from '@/app/_layout';
+import type { exerciseType } from '@/types';
+import TabDisplay from '@/components/general/TabDisplay/TabDisplay';
+import HistoryPage from './HistoryPage';
+import type { setType } from '@/types';
+
+type ExerciseHistoryModalType = {
+    children: React.ReactNode;
+    exercise: exerciseType;
+};
+
+const ExerciseHistoryModal = ({ children, exercise }: ExerciseHistoryModalType) => {
+    const context = useContext(appContext);
+
+    const history: setType[] | undefined = context?.exercises.filter(
+        (item) => item.id === exercise.id
+    )[0].history;
+
+    const [isVisible, setIsVisible] = useState(false);
+
+    const handleModalVisbility = () => {
+        setIsVisible((prev) => !prev);
+    };
+
+    return (
+        <>
+            <TouchableOpacity onPress={handleModalVisbility}>{children}</TouchableOpacity>
+            <ModalWrapper
+                handleOutsideTouch={handleModalVisbility}
+                hasCross
+                handleCrossPress={handleModalVisbility}
+                visible={isVisible}
+            >
+                <View>
+                    <TabDisplay
+                        pages={[
+                            {
+                                tabName: 'test1',
+                                component: (
+                                    <View>
+                                        <Text>text1</Text>
+                                    </View>
+                                ),
+                            },
+                            { tabName: 'History', component: <HistoryPage history={history} /> },
+                        ]}
+                    />
+                </View>
+            </ModalWrapper>
+        </>
+    );
+};
+
+export default ExerciseHistoryModal;

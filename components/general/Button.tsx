@@ -47,6 +47,7 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         flexDirection: 'row',
         columnGap: 10,
+        width: '100%',
     },
     text: {
         color: Colors.light.secondary,

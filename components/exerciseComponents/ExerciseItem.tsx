@@ -3,6 +3,7 @@ import { View, Text, StyleSheet } from 'react-native';
 import { Colors } from '@/constants/Colors';
 import EditExerciseModal from './EditExerciseModal';
 import SmallHeader from '../general/SmallHeader';
+import ExerciseHistoryModal from './ExerciseHistoryModal/ExerciseHistoryModal';
 
 type exerciseItemType = {
     exercise: exerciseType;
@@ -10,15 +11,17 @@ type exerciseItemType = {
 
 const ExerciseItem = ({ exercise }: exerciseItemType) => {
     return (
-        <View style={style.container}>
-            <View style={style.leftSide}>
-                <SmallHeader text={exercise.name} />
-                <Text style={style.category}>{exercise.category}</Text>
+        <ExerciseHistoryModal exercise={exercise}>
+            <View style={style.container}>
+                <View style={style.leftSide}>
+                    <SmallHeader text={exercise.name} />
+                    <Text style={style.category}>{exercise.category}</Text>
+                </View>
+                <View style={style.buttonWrapper}>
+                    <EditExerciseModal exercise={exercise} />
+                </View>
             </View>
-            <View style={style.buttonWrapper}>
-                <EditExerciseModal exercise={exercise} />
-            </View>
-        </View>
+        </ExerciseHistoryModal>
     );
 };
 

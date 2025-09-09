@@ -1,4 +1,4 @@
-import { View, Text, StyleSheet, ScrollView } from 'react-native';
+import { View, Text, StyleSheet, ScrollView, TouchableWithoutFeedback } from 'react-native';
 import type { exerciseType } from '@/types';
 import splitCategories from '@/utils/exercise/splitCategories';
 import CategoryDisplaySection from './CategoryDisplaySection';
@@ -11,12 +11,18 @@ const ExerciseList = ({ exercises }: ExerciseListType) => {
     const split = splitCategories(exercises);
     return (
         <View>
-            <ScrollView contentContainerStyle={styles.container}>
-                {split.map((item, i) => (
-                    <CategoryDisplaySection key={i} exercises={item} />
-                ))}
+            <ScrollView>
+                <TouchableWithoutFeedback>
+                    <View style={styles.container}>
+                        {split.map((item, i) => (
+                            <CategoryDisplaySection key={i} exercises={item} />
+                        ))}
 
-                {!split.length && <Text style={styles.emptyText}>Create some exercises</Text>}
+                        {!split.length && (
+                            <Text style={styles.emptyText}>Create some exercises</Text>
+                        )}
+                    </View>
+                </TouchableWithoutFeedback>
             </ScrollView>
         </View>
     );

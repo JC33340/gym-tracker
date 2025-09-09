@@ -12,39 +12,35 @@ const WorkoutTemplate = () => {
     const context = useContext(appContext);
 
     return (
-        <ScrollView style={style.container}>
-            <Header text="Current Workout" />
-            <Timer startTime={context?.workoutInfo?.startTime ?? null} />
+        <ScrollView style={style.scrollViewContainer}>
+            <View style={style.container}>
+                <Header text="Current Workout" />
+                <Timer startTime={context?.workoutInfo?.startTime ?? null} />
 
-            <Button
-                text="Finish Workout"
-                handleClick={context?.finishActiveWorkout}
-                backgroundColor={Colors.light.green}
-            ></Button>
-            <AddExerciseModal />
-            <Button
-                text="Cancel Workout"
-                handleClick={context?.cancelWorkout}
-                backgroundColor={Colors.light.crimson}
-            />
-            <Button
-                text="check shit"
-                handleClick={() => console.log(context?.workoutInfo, context?.exercises)}
-            />
-            <Button
-                text="check exercises"
-                handleClick={() =>
-                    console.log(context?.exercises[0].history, context?.exercises[1].history)
-                }
-            />
-            <ActiveWorkoutSelectedExerciseList />
+                <Button
+                    text="Cancel Workout"
+                    handleClick={context?.cancelWorkout}
+                    backgroundColor={Colors.light.crimson}
+                />
+                <ActiveWorkoutSelectedExerciseList />
+                <AddExerciseModal />
+                <Button
+                    text="Finish Workout"
+                    handleClick={context?.finishActiveWorkout}
+                    backgroundColor={Colors.light.green}
+                ></Button>
+            </View>
         </ScrollView>
     );
 };
 
 const style = StyleSheet.create({
-    container: {
+    scrollViewContainer: {
         overflow: 'scroll',
+        height: '100%',
+    },
+    container: {
+        rowGap: 10,
     },
 });
 
