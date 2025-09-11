@@ -1,12 +1,11 @@
 import ModalWrapper from '@/components/general/ModalWrapper';
-import { View, TouchableOpacity, Text } from 'react-native';
+import { View, TouchableOpacity, Text, StyleSheet } from 'react-native';
 import { useState, useContext } from 'react';
-import SmallHeader from '@/components/general/SmallHeader';
 import { appContext } from '@/app/_layout';
-import type { exerciseType } from '@/types';
+import type { exerciseType, setType } from '@/types';
 import TabDisplay from '@/components/general/TabDisplay/TabDisplay';
 import HistoryPage from './HistoryPage';
-import type { setType } from '@/types';
+import InsightsPage from './InsightsPage';
 
 type ExerciseHistoryModalType = {
     children: React.ReactNode;
@@ -39,12 +38,8 @@ const ExerciseHistoryModal = ({ children, exercise }: ExerciseHistoryModalType) 
                     <TabDisplay
                         pages={[
                             {
-                                tabName: 'test1',
-                                component: (
-                                    <View>
-                                        <Text>text1</Text>
-                                    </View>
-                                ),
+                                tabName: 'Insights',
+                                component: <InsightsPage history={history} />,
                             },
                             { tabName: 'History', component: <HistoryPage history={history} /> },
                         ]}

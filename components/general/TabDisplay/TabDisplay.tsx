@@ -28,6 +28,7 @@ const TabDisplay = ({ pages }: TabDisplayType) => {
 const style = StyleSheet.create({
     container: {
         height: 500,
+        paddingVertical: 10,
     },
 });
 

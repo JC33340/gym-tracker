@@ -31,8 +31,8 @@ const HistoryItem = ({ item }: HistoryItem) => {
                     <Text style={style.setItem}>Weight (KG)</Text>
                     <Text style={style.setItem}>Reps</Text>
                 </View>
-                {item.sets.map((item) => (
-                    <View style={style.setRow}>
+                {item.sets.map((item, i) => (
+                    <View style={style.setRow} key={i}>
                         <Text style={style.setItem}>{item.weight}</Text>
                         <Text style={style.setItem}>{item.reps}</Text>
                     </View>
